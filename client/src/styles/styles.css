@@ -448,6 +448,22 @@ body::-webkit-scrollbar-thumb:active{
     margin-bottom: 5vh;
 }
 
+.p-2p {
+    padding: 2.5px;
+}
+
+.p-5p {
+    padding: 5px;
+}
+
+.p-10p {
+    padding: 10px;
+}
+
+.p-15p {
+    padding: 15px;
+}
+
 .top-0 {
     top: 0;
 }
