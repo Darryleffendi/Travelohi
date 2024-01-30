@@ -53,7 +53,7 @@ export default function AiPage() {
             const result = await response.json();
             if (response.ok) {
                 console.log('File uploaded:', result);
-                alert(`File uploaded successfully: ${result.filename}`);
+                addChat(`That photo is taken at ${result.message}`, false);
             } else {
                 console.error('Upload failed:', result.message);
                 alert(`Upload failed: ${result.message}`);

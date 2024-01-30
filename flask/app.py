@@ -7,6 +7,7 @@ from werkzeug.utils import secure_filename
 
 UPLOAD_FOLDER = 'upload'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+COUNTRIES = ["Brazil", "Canada", "Finland", "Japan", "United-Kingdom", 'United_States', 'Unlabeled']
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -40,8 +41,8 @@ def predict_image(image):
     loaded_model = tf.keras.models.load_model('alexnet_model.h5')
 
     prediction = loaded_model.predict(image)
-    # predicted_class_index = np.argmax(prediction,axis=1)
-    return prediction
+    predicted_class_index = np.argmax(prediction,axis=1)
+    return COUNTRIES[predicted_class_index[0]]
 
 def preprocess_image(image_path):
     img = tf.keras.preprocessing.image.load_img(image_path, target_size=(224, 224))
