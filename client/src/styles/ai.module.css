@@ -1,0 +1,36 @@
+.loginDiv {
+    box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+    background-color: #F1F6F9;
+    border-radius: 8px;
+    display: flex
+}
+
+.uploadMode {
+    opacity: 100%;
+    margin-top: 0;
+    width: calc(280px + 12vw); 
+    height: calc(400px + 20vh);
+}
+
+.blankMode {
+    width: calc(280px + 12vw); 
+    height: calc(400px + 20vh);
+    opacity: 0%;
+    margin-top: 400px;
+}
+
+.fileInput::file-selector-button {
+    margin-right: 20px;
+    border: none;
+    background: #394867;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: #fff;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    cursor: pointer;
+    transition: background .2s ease-in-out;
+  }
+  
+  .fileInput::file-selector-button:hover {
+    background: #394867;
+  }
