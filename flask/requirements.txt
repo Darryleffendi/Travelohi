@@ -1,7 +1,0 @@
-Flask==2.2.2
-Flask-Cors==4.0.0
-tensorflow==2.15.0
-numpy==1.23.5
-scikit-learn==1.2.1
-pandas==1.5.3
-Werkzeug==2.2.2
