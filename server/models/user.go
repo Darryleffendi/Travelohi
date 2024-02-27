@@ -17,6 +17,7 @@ type User struct {
 	ReceiveEmail     bool      `json:"receiveEmail"`
 	SecurityQuestion string    `json:"securityQuestion"`
 	SecurityAnswer   string    `json:"securityAnswer"`
+	Role             string    `json:"role" gorm:"default:'user'"`
 	Banned           bool      `json:"banned"`
 	ImageUrl         string    `json:"imageUrl"`
 }

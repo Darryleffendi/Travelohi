@@ -8,6 +8,8 @@ export default interface IUser {
     confirmPassword? : string;
     securityQuestion? : string;
     securityAnswer? : string;
+    role? : string;
     emailList? : boolean;
     imageUrl? : any;
+    ID? : number;
 }

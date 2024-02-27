@@ -8,12 +8,9 @@ import flight from "../../assets/icon/plane.png"
 import search from "../../assets/icon/search_dark.png"
 import left from "../../assets/icon/leftWhite.png"
 import right from "../../assets/icon/rightWhite.png"
+import bg from "../../assets/images/footer-bg.jpg"
 import { APP_SETTINGS } from "../../settings/app-settings";
-import PromoCard from "../../components/cards/promo-card";
-import HotelCard from "../../components/cards/hotel-card";
-import PromoCardLarge from "../../components/cards/promo-card-large";
 import Footer from "../../components/footer";
-import FlightCard from "../../components/cards/flight-card";
 import PromoSlider from "./promo-slider";
 import HotelSlider from "./hotel-slider";
 import FlightSlider from "./flight-slider";
@@ -138,7 +135,7 @@ export default function HomePage() {
     }
 
     return (
-        <div>
+        <>
             <div className={styles.cursor} style={cursorStyle}>
                 <div className={styles.cursorEffect} style={cursorEffectStyle}>
                     {
@@ -246,7 +243,31 @@ export default function HomePage() {
                 </div>
 
             </div>
-            <Footer />
-        </div>
+
+            <div className="w-100 h-s20 bg-col-main flex-start">
+            </div>
+            
+            <div className="w-100 h-screen relative bg-col-main flex justify-center">
+                <div className="w-100 h-screen bg-col-white absolute flex-col flex-start">
+                    <img src={bg} className="w-100 cover" />
+                </div>
+                
+                <div className="w-40">
+
+                </div>
+
+                <div className="w-40 z-5">
+                    <p className="m-0 font-p fc-a2 font-medium text-spaced">WHY TRAVEL WITH</p>
+                    <h1 className="font-main font-serif fc-a fs-4xl font-bold m-0">TraveloHI</h1>
+
+                    <p className="w-80 fs-s font-serif o-40 font-medium mt-5">
+                        "Discover seamless travel experiences with TraveloHI, your ultimate destination for booking hotels and airlines effortlessly."
+                    </p>
+                    <p className="w-80 fs-xs  o-40 font-italic">
+                        Transforming travel into seamless adventures, TraveloHI envisions a world where exploration knows no bounds.
+                    </p>
+                </div>
+            </div>
+        </>
     )
 }

@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"strings"
 	"time"
+	"unicode"
 )
 
 func RandomString(n int) string {
@@ -48,4 +49,15 @@ func GenerateRandomCode() string {
 	}
 
 	return string(id)
+}
+
+func CamelToSnake(s string) string {
+	var sb strings.Builder
+	for i, r := range s {
+		if unicode.IsUpper(r) && i > 0 {
+			sb.WriteRune('_')
+		}
+		sb.WriteRune(unicode.ToLower(r))
+	}
+	return sb.String()
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { APP_SETTINGS } from "../settings/app-settings"
 
-export default function SplitSlider({images} : any) {
+export default function SplitSlider({images, imgWidthClass = "w-screen"} : any) {
 
     const [backCarouselImage, setBackCarouselImage] = useState();
     const [frontCarouselImage, setFrontCarouselImage] = useState(images[0]);
@@ -43,11 +43,11 @@ export default function SplitSlider({images} : any) {
 
     return (
         <div className="w-100 h-100 overflow-hidden flex-center justify-start relative">
-            <div className="w-100 h-100 bg-col-a3 absolute transition-2" style={backCarouselStyle} >
-                <img className="w-100 h-100 cover o-60 absolute z--5" src={APP_SETTINGS.backend + "/" + backCarouselImage}/>
+            <div className="w-100 h-100 bg-col-a3 absolute transition-2 overflow-hidden" style={backCarouselStyle} >
+                <img className={`${imgWidthClass} h-100 cover o-70 absolute`} src={APP_SETTINGS.backend + "/" + backCarouselImage}/>
             </div>
-            <div className="w-100 h-100 bg-col-a3 absolute transition-2" style={frontCarouselStyle} >
-                <img className="w-100 h-100 cover o-60 absolute z-5" src={APP_SETTINGS.backend + "/" + frontCarouselImage}/>
+            <div className="w-100 h-100 bg-col-a3 absolute transition-2 overflow-hidden" style={frontCarouselStyle} >
+                <img className={`${imgWidthClass} h-100 cover o-70 absolute z-5`} src={APP_SETTINGS.backend + "/" + frontCarouselImage}/>
             </div>
         </div>
     )

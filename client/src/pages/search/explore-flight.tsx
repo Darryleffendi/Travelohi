@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { HotelFacilitiesInteractable } from "../../components/cards/facilities-card";
+import FlightCard from "../../components/cards/flight-card";
+import FlightCard2 from "../../components/cards/flight-card-2";
 import HotelCard from "../../components/cards/hotel-card";
 import useDebounce from "../../hooks/use-debounce";
 import { APP_SETTINGS } from "../../settings/app-settings";
@@ -15,41 +17,30 @@ export default function ExploreFlight({query = '', isSticky} : any) {
     const [countries, setCountries] = useState([]);
     const [cities, setCities] = useState([]);
 
-    const [hotels, setHotels] = useState<Array<any>>([]);
+    const [flights, setFlights] = useState<Array<any>>([]);
     const [filteredHotels, setFilteredHotels] = useState<Array<any>>([]);
-    const [hotelOpacity, setHotelOpacity] = useState(0);
+    const [flightOpacity, setFlightOpacity] = useState(0);
 
-    const fetchHotels = async () => {
+    const fetchFlights = async () => {
         let response;
-        response = await fetch(APP_SETTINGS.backend + "/api/search/hotel", {
-            method: 'POST',
+        response = await fetch(APP_SETTINGS.backend + "/api/get/flight", {
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({'query': query})
+            // body: JSON.stringify({'query': query})
         });
         
         const data = await response.json();
         
-        for (let i = 0; i < data.length; i++) {
-            const response2 = await fetch(APP_SETTINGS.backend + "/api/get/room/from/hotel", {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({'id': data[i].ID}),
-            });
-            const roomData = await response2.json();
-            data[i].rooms = roomData
-        }
-        
-        setHotels(data);
+        setFlights(data);
     }
 
     useDebounce(() => {
         (async () => {
-            if(hotelOpacity > 0) {
-                setHotelOpacity(0)
+            if(flightOpacity > 0) {
+                setFlightOpacity(0)
                 await new Promise(r => setTimeout(r, 400));
             }
-            await fetchHotels();
-            setHotelOpacity(100)
+            await fetchFlights();
+            setFlightOpacity(100)
 
         })()
       }, [query], 500
@@ -64,12 +55,12 @@ export default function ExploreFlight({query = '', isSticky} : any) {
         }
         setUseFilter(true);
 
-        let hotelFilter = [...hotels]
+        let hotelFilter = [...flights]
 
-        for(let i = 0; i < hotels.length; i++) {
+        for(let i = 0; i < flights.length; i++) {
             for(let j = 0; j < filteredFacility.length; j ++) {
-                if(!hotels[i].facilities.includes(filteredFacility[j])) {
-                    hotelFilter = hotelFilter.filter(h => h.ID !== hotels[i].ID)
+                if(!flights[i].facilities.includes(filteredFacility[j])) {
+                    hotelFilter = hotelFilter.filter(h => h.ID !== flights[i].ID)
                 }
             }
         }
@@ -83,7 +74,7 @@ export default function ExploreFlight({query = '', isSticky} : any) {
 
         setFilteredHotels(hotelFilter)
 
-    }, [filteredCity, filteredCountry, filteredFacility, hotels])
+    }, [filteredCity, filteredCountry, filteredFacility, flights])
 
     useEffect(() => {
         (async () => {
@@ -149,11 +140,45 @@ export default function ExploreFlight({query = '', isSticky} : any) {
     return (
         <div className="w-85 flex justify-between flex-start">
             {
-                isSticky ? <div className="w-25 h-100"></div> : <></>
+                isSticky ? <div className="w-25 h-screen"></div> : <></>
             }
             <div className="w-s20 h-100 flex-col gap-s" style={isSticky ? {position:'fixed', top: '15vh'} : {}}>
                 <div className="w-100">
-                    <p className="font-h fc-a fs-s font-medium">Region</p>
+                    <p className="font-h fc-a fs-s font-medium">Departure</p>
+                    <select 
+                        className={`${styles.filterInput} mb-1`} id="country" 
+                        onChange={filterChange}
+                        defaultValue={"Default"}
+                        name="country"
+                    >
+                        <option value={'Default'}>
+                            Country
+                        </option>
+                        {
+                            countries.map((country : any, index) => {
+                                return <option key={index} value={country.name}>{country.name}</option>
+                            })
+                        }
+                    </select>
+                    <select 
+                        className={styles.filterInput} id="city" 
+                        onChange={filterChange}
+                        defaultValue={"Default"}
+                        name="city"
+                    >
+                        <option value={'Default'}>
+                            City
+                        </option>
+                        {
+                            cities.map((city : any, index) => {
+                                return <option key={index} value={city.name}>{city.name}</option>
+                            })
+                        }
+                    </select>
+                </div>
+                
+                <div className="w-100">
+                    <p className="font-h fc-a fs-s font-medium">Departure</p>
                     <select 
                         className={`${styles.filterInput} mb-1`} id="country" 
                         onChange={filterChange}
@@ -186,35 +211,6 @@ export default function ExploreFlight({query = '', isSticky} : any) {
                     </select>
                 </div>
 
-                <div className="width-100">
-                    <p className="font-h fc-a fs-s font-medium">Facilities</p>
-                    
-                    <div className="mobile-flex-col justify-between">
-                        <div>
-                        {
-                            leftFacility.map((facility : any) => {
-                                return filteredFacility.indexOf(facility) >= 0 ? (
-                                    <HotelFacilitiesInteractable facility={facility} small={true} onClick={facilityFilterChange} active={true}/>
-                                ) : (
-                                    <HotelFacilitiesInteractable facility={facility} small={true} onClick={facilityFilterChange} active={false}/>
-                                )
-                            })
-                        }
-                        </div>
-                        <div>
-                        {
-                            rightFacility.map((facility : any) => {
-                                return filteredFacility.indexOf(facility) >= 0 ? (
-                                    <HotelFacilitiesInteractable facility={facility} small={true} onClick={facilityFilterChange} active={true}/>
-                                ) : (
-                                    <HotelFacilitiesInteractable facility={facility} small={true} onClick={facilityFilterChange} active={false}/>
-                                )
-                            })
-                        }
-                        </div>
-                    </div>
-                </div>
-
                 <div className="w-100">
                     <p className="font-h fc-a fs-s font-medium">Rating</p>
 
@@ -223,11 +219,11 @@ export default function ExploreFlight({query = '', isSticky} : any) {
 
             <div className="w-65 mb-10">
                 <p className="font-h fc-a fs-s font-medium">Results</p>
-                <div className={`w-100 flex gap-s wrap transition o-${hotelOpacity}`}>
+                <div className={`w-100 flex gap-s wrap transition o-${flightOpacity}`}>
                 {
                     !useFilter ? (
-                        hotels.map((hotel : any) => {
-                            return <HotelCard hotel={hotel} className=" w-30 h-s45" />
+                        flights.map((flight : any) => {
+                            return <FlightCard ticket={flight} className=" w-30 h-s45" />
                         })
                     ) : (
                         filteredHotels.map((hotel : any) => {

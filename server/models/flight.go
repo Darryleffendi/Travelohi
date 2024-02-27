@@ -8,6 +8,7 @@ import (
 
 type Flight struct {
 	gorm.Model
+	FlightNumber    string    `json:"flightNumber"`
 	SeatingChart    string    `json:"seatingChart"`
 	PlaneId         uint      `json:"planeId"`
 	Plane           Plane     `json:"plane" gorm:"foreignKey:PlaneId"`

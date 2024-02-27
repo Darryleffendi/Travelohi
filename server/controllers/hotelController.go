@@ -66,9 +66,13 @@ func AddHotel(c *fiber.Ctx) error {
 	cityName := c.FormValue("city")
 	city := GetCityFromName(cityName)
 
+	if name == "" || description == "" || address == "" || cityName == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Missing required parameters"})
+	}
+
 	imagesJson, err := json.Marshal(imagesUrl)
 	if err != nil {
-		fmt.Println("Error occurred during marshaling. Error: %s", err.Error())
+		fmt.Printf("Error occurred during marshaling. Error: %s", err.Error())
 	}
 
 	hotel := models.Hotel{
@@ -145,6 +149,7 @@ func AddRoom(c *fiber.Ctx) error {
 	bedType := c.FormValue("bedType")
 	facilities := c.FormValue("facilities")
 	hotelId, _ := strconv.ParseUint(c.FormValue("hotelId"), 10, 64)
+	guests, _ := strconv.ParseUint(c.FormValue("guests"), 10, 64)
 	hotel := GetHotelFromId(hotelId)
 
 	imagesJson, err := json.Marshal(imagesUrl)
@@ -160,6 +165,7 @@ func AddRoom(c *fiber.Ctx) error {
 		HotelId:    hotelId,
 		Hotel:      hotel,
 		ImageUrls:  string(imagesJson),
+		Guests:     guests,
 	}
 
 	database.DB.Create(&room)

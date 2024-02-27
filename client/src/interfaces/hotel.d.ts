@@ -12,4 +12,5 @@ export default interface IHotel {
     // Data from backend
     imageUrl?: any;
     imageUrls?: Array<any>;
+    ID? : number;
 }

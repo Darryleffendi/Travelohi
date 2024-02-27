@@ -1,0 +1,65 @@
+.chart {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.seating {
+    width: 32px;
+    height: 32px;
+}
+
+.seatingRow {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 15px
+}
+
+.overlayInput {
+    width: 100%;
+    height: 24px;
+    border: none;
+    border-bottom: 1px solid #3c3b3a69;
+    background-color: transparent;
+    background-size: 16px;
+    background-repeat: no-repeat;
+    background-position: left center;
+    text-indent: 24px;
+}
+
+.overlayInput:focus {
+    outline: none;
+    border-bottom: 1px solid #373636;
+}
+
+.chartMobile {
+    width: 50%;
+    height: 100vh;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow-x: auto;
+}
+
+.chartMobileInner {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    position: absolute;
+    transform: rotate(90deg);
+}
+
+@media screen and (max-width:768px) {
+    .chart {
+        display: none;
+    }
+    
+    .chartMobile {
+        display: flex;
+    }
+}

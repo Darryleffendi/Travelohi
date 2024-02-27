@@ -26,9 +26,14 @@ func Setup(app *fiber.App) {
 	app.Get("/api/get/hotel", controllers.GetHotel)
 	app.Get("/api/get/plane", controllers.GetPlane)
 	app.Get("/api/get/flight", controllers.GetFlight)
+
+	app.Post("/api/get/review/from/hotel", controllers.ReviewFromHotel)
 	app.Post("/api/get/room/from/hotel", controllers.RoomFromHotel)
 	app.Post("/api/get/city/from/countryname", controllers.GetCitiesFromCountry)
 	app.Post("/api/get/hotel/from/id", controllers.Hotel)
+	app.Post("/api/get/flight/from/id", controllers.Flight)
 
 	app.Post("api/search/hotel", controllers.SearchHotel)
+
+	app.Post("api/add/review", controllers.AddReview)
 }

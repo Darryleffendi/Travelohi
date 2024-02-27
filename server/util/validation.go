@@ -60,3 +60,20 @@ func ValidateQuestion(question string) bool {
 	}
 	return false
 }
+
+func ValidateCategory(category string) bool {
+
+	categories := []string{
+		"Cleanliness",
+		"Comfort",
+		"Location",
+		"Service",
+	}
+
+	for _, b := range categories {
+		if b == category {
+			return true
+		}
+	}
+	return false
+}

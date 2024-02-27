@@ -16,6 +16,9 @@ export default function RoomAdminCard({data, handleChange, changeImages, changeF
             <label className="font-p fc-gray fs-2xs text-left w-80" htmlFor="bedType">Bed Type</label>
             <input name="bedType" value={data.bedType} onChange={(e) => handleChange(e, data.index)} className={`${styles.inputInverse} w-80 mb-1`} placeholder="Bed Type" id="bedType"/>
 
+            <label className="font-p fc-gray fs-2xs text-left w-80" htmlFor="bedType">Guests Amount</label>
+            <input name="guests" value={data.guests} onChange={(e) => handleChange(e, data.index)} className={`${styles.inputInverse} w-80 mb-1`} placeholder="Guests Amount" id="guests"/>
+
             <div className="w-100 mobile-flex-col mb-5 mt-1">
                 <div className="ml-2 flex-col w-50 gap-5">
                     <div className="flex-center">

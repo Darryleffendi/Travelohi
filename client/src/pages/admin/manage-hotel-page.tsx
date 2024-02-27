@@ -224,15 +224,13 @@ export default function ManageHotelPage({toggleLoading, setSuccess} : any) {
                 bedType: "",
                 facilities: [],
                 images: [],
+                guests : 0,
             }]
         ));
     }
 
     const removeRoom = () => {
-        setRoomData(prevData => ({
-         ...prevData,
-            hotelRooms: prevData.filter((room, index) => index !== prevData.length - 1)
-        }));
+        setRoomData(prevData => prevData.filter((room, index) => index !== prevData.length - 1));
     }
 
     return (

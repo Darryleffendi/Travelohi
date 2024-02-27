@@ -15,8 +15,8 @@ function App() {
           <MainTemplate>
             <Routes>
               {
-                MENU_LIST.map((menu : IMenu) =>
-                  <Route path={menu.path} element={menu.element} />
+                MENU_LIST.map((menu : IMenu, index : number) =>
+                  <Route path={menu.path} element={menu.element} key={index}/>
                 )
               }
             </Routes>

@@ -9,7 +9,7 @@ import styles from '../styles/navbar.module.css'
 import useNavigator from '../contexts/navigator-context'
 import useUser from '../contexts/user-context'
 
-export default function Navbar() {
+export default function Navbar({disableNavbarEffect = false} : any) {
 
     const [showNav, setShowNav] = useState(true)
     const [showMobileNav, setShowMobileNav] = useState(false);
@@ -22,12 +22,18 @@ export default function Navbar() {
     var prevScroll = 0;
 
     useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
+        if(!disableNavbarEffect) {
+            window.addEventListener('scroll', handleScroll);
+        }
+        else {
+            window.removeEventListener('scroll', handleScroll);
+            setShowNav(true);
+        }
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
         }
-    }, []);
+    }, [disableNavbarEffect]);
 
     const handleScroll = (event : any) => {
         let scrollTop = window.scrollY
@@ -58,13 +64,13 @@ export default function Navbar() {
 
     return (
         <>
-            <nav className={styles.nav} style={showNav ? {'top' : '0px'} : {'top' : '-135px'}}>
+            <nav className={styles.nav} style={{'top' : showNav ? '0px' : '-135px', 'position' : disableNavbarEffect ? 'absolute' : 'fixed'}}>
                 <div className={styles.navTray}>    
                     <div className='w-40 flex-center h-100 justify-between'>
                         <div></div>
                         <div className='flex-center w-20 justify-around pointer' onClick={() => changePage("/profile")}>
                             <img src={userIcon} className='h-12p'/>
-                            <p className='font-p fs-2xs h-op2 '>{user == null ? 'login' : user.firstName}</p>
+                            <p className='font-p fs-2xs h-op2 '>{user?.firstName == null ? 'login' : user.firstName}</p>
                         </div>
                     </div>
                 </div>
@@ -75,12 +81,12 @@ export default function Navbar() {
                     </div>
                     <div className={`no-mobile ${styles.navNavigate}`}>
                         {
-                            MENU_LIST.map((menu : IMenu) => {
+                            MENU_LIST.map((menu : IMenu, index : number) => {
 
-                                if(menu.hideOnNavbar) return <></>
+                                if(menu.hideOnNavbar) return <span key={index}></span>
 
                                 return (
-                                    <div className={`${styles.navLink} pointer`} onClick={() => {if(menu.path !== location.pathname) changePage(menu.path)}}>
+                                    <div className={`${styles.navLink} pointer`} onClick={() => {if(menu.path !== location.pathname) changePage(menu.path)}} key={index}>
                                         <p className=' fc-white mb--1'>
                                         {menu.name}
                                         </p>
@@ -104,14 +110,15 @@ export default function Navbar() {
                         </div>
                         <div className='transition-2 w-screen h-80 mt-10 flex-col flex-center' style={showMobileNavBtn ? {opacity : '100%'} : {opacity:'0%'}}>
                         {
-                            MENU_LIST.map((menu : IMenu) => {
+                            MENU_LIST.map((menu : IMenu, index : number) => {
 
-                                if(menu.hideOnNavbar) return <></>
+                                if(menu.hideOnNavbar) return <span key={index}></span>
 
                                 return (
                                     <div 
                                         className={`${styles.navLink} pointer `} 
                                         onClick={() => {if(menu.path !== location.pathname) { changePage(menu.path, false); setShowMobileNav(false); }}}
+                                        key={index}
                                     >
                                         <p className=' fc-white mb--1 font-serif fs-l'>
                                         {menu.name}

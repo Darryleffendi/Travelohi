@@ -24,7 +24,7 @@ export function NavigatorProvider({children} : IChildren) {
         const transition = async () => {
             await new Promise(r => setTimeout(r, 5));
             setShowTransition(true);
-            await new Promise(r => setTimeout(r, 550));
+            await new Promise(r => setTimeout(r, 600));
             navigate(path);
             window.scrollTo(0, 0)
             setShowTransition(false);

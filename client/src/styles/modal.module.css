@@ -1,0 +1,29 @@
+.modal {
+    width: calc(100px + 65vw);
+    height: 85vh;
+}
+
+.inputInverse {
+    border: 2px solid transparent;
+    height: 2.5em;
+    padding-left: 0.8em;
+    outline: none;
+    overflow: hidden;
+    background-color: #ffffff;
+    border-radius: 10px;
+    transition: all 0.5s;
+}
+
+.inputInverseTall {
+    border: 2px solid transparent;
+    height: 5em;
+    padding-left: 0.8em;
+    padding-top: 0.8em;
+    outline: none;
+    overflow: hidden;
+    background-color: #ffffff;
+    border-radius: 10px;
+    transition: all 0.5s;
+    max-width: 90%;
+    font-style: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;;   
+}

@@ -1,9 +1,11 @@
 import { useState } from "react";
+import useNavigator from "../../contexts/navigator-context";
 
 
 export default function FlightCard({className, ticket, style} : any) {
 
     const [hovered, setHovered] = useState<boolean>(false);
+    const navigate = useNavigator();
 
     let imgSrc = ticket.arrivalCity.imageUrl
     let airline = ticket.plane.airline.name
@@ -17,6 +19,7 @@ export default function FlightCard({className, ticket, style} : any) {
         <div className={` bg-col-white z-10 shadow ${className} flex-col justify-between transition-2`} 
             onMouseEnter={() => setHovered(true)} 
             onMouseLeave={() => setHovered(false)}
+            onClick={() => navigate("flight/" + ticket.ID)}
             style={style}
         >
             <div className="w-100 h-50 bg-col-a3 overflow-hidden flex-center justify-center relative">

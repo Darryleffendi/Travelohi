@@ -54,7 +54,7 @@ export default function ExploreHotel({query = '', isSticky} : any) {
         })()
       }, [query], 500
     );
-
+    
     useEffect(() => {
 
         if(filteredCity == '' && filteredCountry == '' && filteredFacility.length == 0) {
@@ -149,7 +149,7 @@ export default function ExploreHotel({query = '', isSticky} : any) {
     return (
         <div className="w-85 flex justify-between flex-start">
             {
-                isSticky ? <div className="w-25 h-100"></div> : <></>
+                isSticky ? <div className="w-25 h-screen"></div> : <></>
             }
             <div className="w-s20 h-100 flex-col gap-s" style={isSticky ? {position:'fixed', top: '15vh'} : {}}>
                 <div className="w-100">
@@ -186,7 +186,7 @@ export default function ExploreHotel({query = '', isSticky} : any) {
                     </select>
                 </div>
 
-                <div className="width-100">
+                <div className="w-100">
                     <p className="font-h fc-a fs-s font-medium">Facilities</p>
                     
                     <div className="mobile-flex-col justify-between">

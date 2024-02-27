@@ -5,4 +5,5 @@ export default interface IHotelRoom {
     bedType: string;
     facilities: Array<string>;
     images?: Array<any>;
+    guests?: number;
 }

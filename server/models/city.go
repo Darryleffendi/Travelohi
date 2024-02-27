@@ -8,5 +8,6 @@ type City struct {
 	CountryId   uint    `json:"countryId"`
 	Country     Country `gorm:"foreignKey:CountryId"`
 	AirportCode string  `json:"airportCode" gorm:"default:''"`
+	AirportName string  `json:"airportName" gorm:"default:''"`
 	ImageUrl    string  `json:"imageUrl" gorm:"default:''"`
 }

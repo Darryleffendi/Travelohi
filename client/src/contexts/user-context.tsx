@@ -13,7 +13,6 @@ const userContext = createContext<UserContextType>([
 
 export function UserProvider({children} : IChildren) {
 
-    const navigate = useNavigator();
     
     const [user, setUser] = useState<any>(null)
 
@@ -24,9 +23,9 @@ export function UserProvider({children} : IChildren) {
             headers: {'Content-Type': 'application/json'}
         });
         const data = await response.json()
+        
         if("error" in data) {
             setUser({'notAuthenticated' : true})
-            navigate("/login")
         }
         else {
             setUser(data)

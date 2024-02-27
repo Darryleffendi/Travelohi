@@ -35,6 +35,7 @@ func Connect() {
 	connection.AutoMigrate(
 		&models.Flight{},
 		&models.Seat{},
+		&models.Review{},
 	)
 
 	DB = connection

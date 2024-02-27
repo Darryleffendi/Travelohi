@@ -57,7 +57,6 @@ export default function FlightSlider() {
                 method: 'GET',
             });
             const ticketData = await response.json();
-            console.log(ticketData)
             var ticketsData = [...ticketData];
             
             setTickets(ticketsData);
