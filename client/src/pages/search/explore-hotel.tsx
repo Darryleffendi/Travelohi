@@ -91,11 +91,15 @@ export default function ExploreHotel({query = '', isSticky, country = ""} : any)
             data[i].rooms = roomData
 
             let minPrice = roomData[0].price;
+            let availableRooms = 0;
             data[i].rooms.forEach((element : any) => {
                 if (element.price < minPrice) {
                     minPrice = element.price
                 }
+                availableRooms += element.capacity
             });
+
+            data[i].availableRooms = availableRooms
             data[i].minPrice = minPrice;
         }
 
@@ -185,6 +189,9 @@ export default function ExploreHotel({query = '', isSticky, country = ""} : any)
         }
         else if(sortBy === "Price") {
             hotelFilter.sort((a, b) => (a.minPrice - b.minPrice) * sortOrder);
+        }
+        else if(sortBy === "Available Rooms") {
+            hotelFilter.sort((a, b) => (a.availableRooms - b.availableRooms) * sortOrder);
         }
 
         setFilteredHotels(hotelFilter)
@@ -391,6 +398,9 @@ export default function ExploreHotel({query = '', isSticky, country = ""} : any)
                                 </option>
                                 <option value={'Price'}>
                                     Price
+                                </option>
+                                <option value={'Available Rooms'}>
+                                    Available Rooms
                                 </option>
                             </select>
                             <select 
