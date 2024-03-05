@@ -37,8 +37,8 @@ export default function Footer({darkMode = false, color = ""}) {
         }
             <div className="w-100 h-s10" style={{backgroundColor: color}}></div>
             <div className="w-100 h-s70 pointer-events-none relative">
-                <div className="w-100 h-s5 pointer-events-none absolute" style={{top:'-7.5vh', zIndex:'2', backgroundColor: color}}></div>
-                <div className="w-100 h-s10 rounded-3 shadow pointer-events-none absolute" style={{top:'-5vh', zIndex:'1', backgroundColor: color}}></div>
+                <div className="w-100 h-s5 pointer-events-none absolute" style={{top:'-7.5vh', zIndex: showNavigableFooter ? '2' : '-1', backgroundColor: color}}></div>
+                <div className="w-100 h-s10 shadow pointer-events-none absolute" style={{top:'-5vh', zIndex: showNavigableFooter ? '1' : '-2', backgroundColor: color}}></div>
             </div>
             <div className="w-100 h-8p" ref={observerTargetRef}></div>
 

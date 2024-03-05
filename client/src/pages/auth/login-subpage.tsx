@@ -6,10 +6,12 @@ import passwordIcon from "../../assets/icon/password.png";
 import googleIcon from "../../assets/icon/google.png";
 import { useEffect, useState } from "react";
 import IAuthPageParameters from "../../interfaces/auth-page-param";
+import useNavigator from "../../contexts/navigator-context";
 
-export default function LoginSubpage({setSubpage, submitForm, newData, errorMessage, addNewData} : IAuthPageParameters) {
+export default function LoginSubpage({setSubpage, submitForm, newData, errorMessage, addNewData, setShowOtpPopup, setErrorMessage} : IAuthPageParameters) {
 
     const [opacity, setOpacity] = useState('0%');
+    const navigate = useNavigator();
 
     useEffect(() => {
         const delaything = async () => {
@@ -26,6 +28,17 @@ export default function LoginSubpage({setSubpage, submitForm, newData, errorMess
         await new Promise(r => setTimeout(r, 350));
 
         setSubpage(1);
+    }
+
+    const showOtp = () => {
+
+        if(newData.email == "") {
+            if(setErrorMessage)
+            setErrorMessage("Fill in your email address")
+            return;
+        }
+
+        if(setShowOtpPopup) setShowOtpPopup(true)
     }
 
     return (
@@ -55,7 +68,7 @@ export default function LoginSubpage({setSubpage, submitForm, newData, errorMess
                 />
             </div>
 
-            <a className="font-p fc-gray fs-2xs w-100 mt-1 text-right no-deco" href="https://www.nhs.uk/conditions/dementia/treatment/">Forget password?</a>
+            <a className="font-p fc-gray fs-2xs w-100 mt-1 text-right no-deco pointer" onClick={() => navigate("/forget-password")}>Forget password?</a>
 
             <button className={`${styles.signBtn} fs-xs font-h bg-col-a mt-5 pointer`} onClick={()=>{if(submitForm) submitForm()}}>Sign In</button>
 
@@ -64,7 +77,7 @@ export default function LoginSubpage({setSubpage, submitForm, newData, errorMess
                 <p className="font-p fc-gray fs-2xs m-0 o-70">OR</p>
                 <div className="overlay-line"></div>
             </div>
-            <button className={`${styles.signBtn} fs-xs font-p bg-col-main fc-a border-a mb-2 pointer`} onClick={()=>{if(submitForm) submitForm()}}>
+            <button className={`${styles.signBtn} fs-xs font-p bg-col-main fc-a border-a mb-2 pointer`} onClick={()=>{showOtp()}}>
                 <img src={googleIcon} style={{width:'14px', marginRight: '12px'}}/>  
                 Sign In with OTP
             </button>

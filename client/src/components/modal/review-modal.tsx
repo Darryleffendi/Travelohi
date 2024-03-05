@@ -12,27 +12,30 @@ export default function ReviewModal({unmount = () => {}, hotelId, reviews = null
     const [rating, setRating] = useState(0);
     const [user, refreshUser] = useUser();
     const [reviewState, setReviews] = useState(reviews);
+    const [errorMessage, setErrorMessage] = useState("")
 
     const [review, setReview] = useState({
         category: "",
         review: "",
         isAnonymous: false,
     });
+
+    const fetchReview = async () => {
+        const response = await fetch(APP_SETTINGS.backend + "/api/get/review/from/hotel", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({'id': hotelId})
+        });
+        const data = await response.json();
+        setReviews(data)
+    }
  
     useEffect(() => {
-        setModalShown(true);
         document.body.style.overflowY = "hidden"
+        setModalShown(true);
 
         if(reviews == null) {
-            (async () => {
-                const response = await fetch(APP_SETTINGS.backend + "/api/get/review/from/hotel", {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({'id': hotelId})
-                });
-                const data = await response.json();
-                setReviews(data)
-            })()
+            fetchReview()
         }
 
         return () => {
@@ -62,19 +65,33 @@ export default function ReviewModal({unmount = () => {}, hotelId, reviews = null
                 'userId' : user?.ID,
             })
         });
+        const data = await response.json();
+        if("error" in data) {
+            setErrorMessage(data.error)
+            return;
+        }
+        setErrorMessage("");
+        setReview({
+            category: "",
+            review: "",
+            isAnonymous: false,
+        })
+        fetchReview();
         refetch();
     }
 
     console.log(reviews);
 
     return (
-        <div className="w-screen h-screen fixed z-100 bg-col-dark2-transparent flex-center justify-center transition-2 top-0" style={{opacity: modalShown ? '100%' : '0%', backdropFilter: modalShown ? 'blur(10px)' : '' }} onClick={closeModal}>
+        <div className="w-screen h-screen fixed z-100 bg-col-dark2-transparent flex-center justify-center transition-2 top-0 left-0" style={{opacity: modalShown ? '100%' : '0%', backdropFilter: modalShown ? 'blur(10px)' : '' }} onClick={closeModal}>
             <div className={`bg-col-main shadow-light transition-3 flex-center justify-center mobile-flex-col overflow-auto ${styles.modal}`} style={ modalShown ? {marginTop:'0vw', opacity: '100%'} : {marginTop:'60vw', opacity: '0%'}}  onClick={(e) => e.stopPropagation()}>
                 <div className={`w-50 h-100 mr-5 mw-80 transition overflow-auto scroll-simple`}>
                     {
-                        reviewState.map((review : any, i : number) => {
-                            return <ReviewCardSmall review={review} key={i}/>
-                        })
+                        reviewState != null ? (
+                            reviewState.map((review : any, i : number) => {
+                                return <ReviewCardSmall review={review} key={i}/>
+                            })
+                        ) : <></>
                     }
                 </div>
                 <div className="w-35 h-80 flex-col mw-80">
@@ -112,6 +129,8 @@ export default function ReviewModal({unmount = () => {}, hotelId, reviews = null
                         />
                         <label className="font-p fs-2xs fc-gray text-left w-80 ml-1" htmlFor="agree">Write review as anonymous</label>
                     </div>
+                    
+                    <p className="mb-0 fc-red fs-xs">{errorMessage}</p>
                     
                     <button className="bg-col-a2 o-70 h-op2 w-90 fc-white mt-2" onClick={submit}>Submit Review</button>
                 </div>

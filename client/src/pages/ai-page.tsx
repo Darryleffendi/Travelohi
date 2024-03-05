@@ -4,12 +4,14 @@ import styles from "../styles/ai.module.css";
 import bot from "../assets/images/bot.webp"
 import { APP_SETTINGS } from "../settings/app-settings";
 import ChatCard from "../components/chat-card";
+import useNavigator from "../contexts/navigator-context";
 
 export default function AiPage() {
 
     const [pageMode, setPageMode] = useState(0);
     const [selectedFile, setSelectedFile] = useState(null);
     const [chats, setChats] = useState<Array<ReactElement>>([]);
+    const navigate = useNavigator();
 
     const chatContainer = useRef(null);
 
@@ -52,6 +54,23 @@ export default function AiPage() {
             if (response.ok) {
                 console.log('File uploaded:', result);
                 addChat(`That photo is taken at ${result.message}`, false);
+                addChat(<>
+                    Discover&nbsp;
+                    <div 
+                        className="fc-a inline-block pointer underline o-60 h-op2"
+                        onClick={() => navigate("/explore/country:" + result.message + "/hotel")}
+                    >
+                        Hotels
+                    </div>
+                    &nbsp;and&nbsp;
+                    <div 
+                        className="fc-a inline-block pointer underline o-60 h-op2"
+                        onClick={() => navigate("/explore/country:" + result.message + "/flight")}
+                    >
+                        Flights
+                    </div>
+                    &nbsp;on {result.message}
+                </>, false);
             } else {
                 console.error('Upload failed:', result.message);
                 alert(`Upload failed: ${result.message}`);

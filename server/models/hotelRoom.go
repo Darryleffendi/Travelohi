@@ -10,6 +10,7 @@ type HotelRoom struct {
 	Facilities string  `json:"facilities"`
 	ImageUrls  string  `json:"imageUrls"`
 	Guests     uint64  `json:"guests"`
+	Capacity   uint64  `json:"capacity"`
 	HotelId    uint64  `json:"hotelId"`
 	Hotel      Hotel   `gorm:"foreignKey:HotelId"`
 }

@@ -6,11 +6,6 @@
     align-items: center;
 }
 
-.seating {
-    width: 32px;
-    height: 32px;
-}
-
 .seatingRow {
     display: flex;
     flex-direction: row;
@@ -61,5 +56,9 @@
     
     .chartMobile {
         display: flex;
+    }
+
+    .seat {
+        transform: rotate(-90deg);
     }
 }

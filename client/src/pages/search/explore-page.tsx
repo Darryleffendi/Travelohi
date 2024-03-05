@@ -7,6 +7,7 @@ import { APP_SETTINGS } from "../../settings/app-settings"
 import { HotelFacilities } from "../../components/cards/facilities-card"
 import ExploreHotel from "./explore-hotel"
 import ExploreFlight from "./explore-flight"
+import { useParams } from "react-router-dom"
 
 export default function ExplorePage() {
 
@@ -14,9 +15,21 @@ export default function ExplorePage() {
     const [contentOpacity, setContentOpacity] = useState(100);
 
     const [isSticky, setIsSticky] = useState(false);
-    const observerTargetRef = useRef(null);
-
+    const [headerTransform, setHeaderTransform] = useState("translateY(0px)")
+    const [headerTextTransform, setHeaderTextTransform] = useState("translateY(0px)")
     const [search, setSearch] = useState("");
+    
+    const observerTargetRef = useRef(null);
+    const { params, page} = useParams();
+    const [country, setCountry] = useState("");
+    
+    const handleScroll = async () => {
+        let scrollTop = window.pageYOffset;
+        if(scrollTop < 1800) {            
+            setHeaderTransform(`translateY(${scrollTop * 0.5}px)`);
+            setHeaderTextTransform(`translateY(${scrollTop * 0.35}px)`);
+        }
+    }
 
     const changeSearchMode = async (index : number) => {
         setContentOpacity(0)
@@ -28,6 +41,30 @@ export default function ExplorePage() {
     }
 
     useEffect(() => {
+
+        if(params != undefined) {
+            if(params.includes("query:")) {
+                setSearch(params.replace("query:", ""));
+            }
+            if(params.includes("country:")) {
+                setCountry(params.replace("country:", "").replace("_", " "));
+            }
+        }
+        else {
+            setCountry("")
+            setSearch("")
+        }
+
+        if(page != undefined) {
+            if(page == "hotel") {
+                setSearchMode(0);
+            }
+            else if(page == "flight") {
+                setSearchMode(1);
+            }
+        }
+
+        window.addEventListener("scroll", handleScroll);
         const observer = new IntersectionObserver(
             (entries) => {
               const [entry] = entries;
@@ -43,19 +80,21 @@ export default function ExplorePage() {
             if (observerTargetRef.current) {
               observer.unobserve(observerTargetRef.current);
             }
+            window.removeEventListener("scroll", handleScroll);
           };
     }, [])
 
     return (
         <>
         <div className="w-screen bg-col-a  overflow-hidden flex-col flex-center relative">
+        <img className="absolute w-screen h-s90 cover o-30 filter-blur" src="/cities/bergen.jpg"  style={{transform: headerTransform}}/>
             <div className="w-80 h-s80 flex-col justify-center relative" ref={observerTargetRef}>
                 <div className="w-100 h-32p"></div>
-                <p className="font-h fs-3xl text-narrow font-medium m-0">Explore</p>
+                <p className="font-h fs-3xl text-narrow font-medium m-0" style={{transform: headerTextTransform}}>Explore</p>
                 <div className="w-50">
-                    <p className="font-p fs-s text-narrow font-light m-0">This is your explore page. You can explore the hotels and the flights in the city</p>
+                    <p className="font-p fs-s text-narrow font-light m-0" style={{transform: headerTextTransform}}>This is your explore page. You can explore the hotels and the flights in the city</p>
                 </div>
-                {/* <img src={snowMountain} className="absolute w-80 o-10 right-0 bottom-0 self-flex-center mb--5"/> */}
+
             </div>
 
             
@@ -69,7 +108,7 @@ export default function ExplorePage() {
                     type="text" className={` ${styles.overlayInput}`} id="last" 
                     style={{backgroundImage: `url(${searchIcon}`}}
                     placeholder={`Search for ${searchMode == 0 ? 'hotels' : 'flights'}`}
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={(e) => setSearch(e.target.value)} value={search}
                 />
                 </div>
             </div>
@@ -89,7 +128,7 @@ export default function ExplorePage() {
             <div className="w-screen flex-col flex-center justify-center transition" style={{opacity: contentOpacity + "%"}}>
                 <div className="w-100 h-s15"></div>
                 {
-                    searchMode == 0 ? <ExploreHotel isSticky={isSticky} query={search}/> : <ExploreFlight isSticky={isSticky} query={search}/>
+                    searchMode == 0 ? <ExploreHotel isSticky={isSticky} query={search} country={country}/> : <ExploreFlight isSticky={isSticky} query={search} country={country}/>
                 }
             </div>
         </div>

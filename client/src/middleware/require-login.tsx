@@ -21,7 +21,7 @@ export default function RequireLogin({children} : IChildren) {
     }, [])
 
     if(user != null && "notAuthenticated" in user) {
-        return <div className="w-screen h-screen bg-col-a"></div>
+        navigate("/login")
     }
 
     return (

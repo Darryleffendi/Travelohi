@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"time"
 
 	"github.com/darryleffendi/travelHI/database"
 	"github.com/darryleffendi/travelHI/models"
@@ -73,6 +74,13 @@ func AddHotel(c *fiber.Ctx) error {
 	imagesJson, err := json.Marshal(imagesUrl)
 	if err != nil {
 		fmt.Printf("Error occurred during marshaling. Error: %s", err.Error())
+	}
+
+	var count int64
+	database.DB.Model(&models.Hotel{}).Where("name=?", name).Count(&count)
+
+	if count > 0 {
+		return c.Status(400).JSON(map[string]string{"error": "Hotel name already exists"})
 	}
 
 	hotel := models.Hotel{
@@ -219,4 +227,44 @@ func SearchHotel(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(hotels)
+}
+
+func RoomAvailability(c *fiber.Ctx) error {
+	var data map[string]interface{}
+
+	err := c.BodyParser(&data)
+
+	if err != nil {
+		return err
+	}
+
+	roomId := uint(data["roomId"].(float64))
+
+	var room models.HotelRoom
+	database.DB.Preload("Hotel").Where("id=?", roomId).First(&room)
+
+	layout := "2006-01-02"
+
+	startDate, err := time.Parse(layout, data["startDate"].(string))
+	if err != nil {
+		return err
+	}
+	endDate, err := time.Parse(layout, data["endDate"].(string))
+	if err != nil {
+		return err
+	}
+
+	maxBooking := 0
+
+	for d := startDate; d.Before(endDate) || d.Equal(endDate); d = d.AddDate(0, 0, 1) {
+
+		var bookings int64
+		database.DB.Model(&models.RoomBooking{}).Where("room_id=?", roomId).Where("date=?", d).Count(&bookings)
+
+		if bookings > int64(maxBooking) {
+			maxBooking = int(bookings)
+		}
+	}
+
+	return c.JSON(int(room.Capacity) - maxBooking)
 }

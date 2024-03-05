@@ -20,4 +20,11 @@ type User struct {
 	Role             string    `json:"role" gorm:"default:'user'"`
 	Banned           bool      `json:"banned"`
 	ImageUrl         string    `json:"imageUrl"`
+	Address          string    `json:"address"`
+	PhoneNumber      string    `json:"phoneNumber"`
+	CardNumber       string    `json:"cardNumber"`
+	CardHolder       string    `json:"cardHolder"`
+	CardExpiry       string    `json:"cardExpiry"`
+	CardCvv          string    `json:"cardCvv"`
+	WalletBalance    uint64    `json:"walletBalance" gorm:"default:1000"`
 }

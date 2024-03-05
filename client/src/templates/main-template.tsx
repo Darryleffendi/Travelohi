@@ -2,19 +2,23 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Footer from "../components/footer";
 import Navbar from "../components/navbar";
+import useUser from "../contexts/user-context";
 import IChildren from "../interfaces/children-interface";
 import RequireAdmin from "../middleware/require-admin";
 import RequireLogin from "../middleware/require-login";
+import BannedError from "../pages/error/banned-error";
 import { IMenu, MENU_LIST } from "../settings/menu-settings";
 
 
 export default function MainTemplate({children} : IChildren) {
 
     const [menu, setMenu] = useState<any>();
+    const [user, refreshUser] = useUser();
 
     const [showNavbar, setShowNavbar] = useState<any>(true);
     const [disableNavbarEffect, setDisableNavbarEffect] = useState<any>(false)
     const [footerColor, setFooterColor] = useState<any>("")
+    const [banned, setBanned] = useState(false)
 
     const location = useLocation();
 
@@ -54,6 +58,19 @@ export default function MainTemplate({children} : IChildren) {
             setFooterColor("")
         }
     }, [menu])
+
+    useEffect(() => {
+        if(user != null && user.banned == true) {
+            setBanned(true)
+        }
+        else {
+            setBanned(false)
+        }
+    }, [user])
+
+    if(banned) {
+        return <BannedError />
+    }
 
     const pageContent = (
         <div className="overflow-hidden">

@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import useNavigator from "../../contexts/navigator-context";
+import useUser from "../../contexts/user-context";
 import IHotelRoom from "../../interfaces/hotel-room";
 import { APP_SETTINGS } from "../../settings/app-settings";
 import styles from "../../styles/modal.module.css"
 import { HotelFacilities } from "../cards/facilities-card";
+import check from '../../assets/icon/checkmark.png'
 
 export default function RoomModal({room, unmount = () => {}} : any) {
 
@@ -14,6 +17,16 @@ export default function RoomModal({room, unmount = () => {}} : any) {
 
     const [leftFacility, setLeftFacility] = useState([]);
     const [rightFacility, setRightFacility] = useState([]);
+
+    const [user, refreshUser] = useUser();
+    const navigate = useNavigator();
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+    const [errorMessage, setErrorMessage] = useState("")
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [availableRooms, setAvailableRooms] = useState(-1);
+
+    const [btnHovered, setBtnHovered] = useState(false);
 
     const changeImage = async (image : any) => {
         setImageOpacity(0);
@@ -37,11 +50,66 @@ export default function RoomModal({room, unmount = () => {}} : any) {
         }   
     }, [])
 
+    useEffect(() => {
+
+        (async () => {
+            if(startDate == "" || endDate == "") {
+                return;
+            }
+    
+            const response = await fetch(APP_SETTINGS.backend + "/api/get/room/availability", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    roomId: room.ID,
+                    startDate: startDate,
+                    endDate: endDate
+                })
+            });
+            const data = await response.json();
+            setAvailableRooms(data)
+
+        })()
+
+    }, [startDate, endDate])
+
     const closeModal = async () => {
-        
         setModalShown(false);
         await new Promise(r => setTimeout(r, 600));
         unmount();
+    }
+
+    const handleSubmit = async () => {
+        if(availableRooms <= 0) {
+            return;
+        }
+
+        if(user != null && "notAuthenticated" in user) {
+            navigate("/login")
+            return;
+        }
+
+        const response = await fetch(APP_SETTINGS.backend + "/api/add/room/cart", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                roomId: room.ID,
+                startDate: startDate,
+                endDate: endDate,
+                userId: user?.ID
+            })
+        });
+        const data = await response.json();
+        if("error" in data) {
+            setErrorMessage(data.error)
+            return;
+        }
+        setShowSuccess(true);
+        setErrorMessage("")
+        setStartDate("")
+        setEndDate("")
+        await new Promise(r => setTimeout(r, 2000));
+        setShowSuccess(false);
     }
 
     return (
@@ -78,27 +146,54 @@ export default function RoomModal({room, unmount = () => {}} : any) {
                         </div>
                     </div>
                     
-                    <div className="mt-5 flex-center justify-between w-90">
+                    <div className="mt-2 flex-center justify-between w-90">
                         <div className="flex-col w-45">
-                            <label className="font-p fc-gray fs-2xs text-left w-100" htmlFor="arrivalTime">Check In</label>
-                            <input type={"date"} name="arrivalTime" value={''} onChange={() => {}} className={`${styles.inputInverse} w-100 mb-1`} placeholder="arrivalTime" id="arrivalTime"/>
+                            <label className="font-p fc-gray fs-2xs text-left w-100" htmlFor="startDate">Check In</label>
+                            <input type={"date"} name="startDate" value={startDate} onChange={(e) => setStartDate(e.target.value)} className={`${styles.inputInverse} w-100 mb-1`} placeholder="startDate" id="startDate"/>
                         </div>
 
                         <div className="flex-col w-45">
-                            <label className="font-p fc-gray fs-2xs text-left w-100" htmlFor="arrivalTime">Check Out</label>
-                            <input type={"date"} name="arrivalTime" value={''} onChange={() => {}} className={`${styles.inputInverse} w-100 mb-1`} placeholder="arrivalTime" id="arrivalTime"/>
+                            <label className="font-p fc-gray fs-2xs text-left w-100" htmlFor="endDate">Check Out</label>
+                            <input type={"date"} name="endDate" value={endDate} onChange={(e) => setEndDate(e.target.value)} className={`${styles.inputInverse} w-100 mb-1`} placeholder="endDate" id="endDate"/>
                         </div>
                     </div>
 
                     <label className="font-p fc-gray fs-2xs text-left w-90" htmlFor="arrivalTime">Guests</label>
-                    <input type={"number"} name="arrivalTime" value={''} onChange={() => {}} className={`${styles.inputInverse} w-90 mb-1`} placeholder="Number of Guests" id="arrivalTime"/>
-                        
+                    <input type={"number"} name="arrivalTime" className={`${styles.inputInverse} w-90 mb-1`} placeholder="Number of Guests" id="arrivalTime"/>
+                    
+                    <p className="m-0 fc-a2">{ availableRooms >= 0 ? `${availableRooms} rooms available` : ''}</p>
+                    <p className="mb-0 fc-red fs-xs">{errorMessage}</p>
                     <div className="flex-center w-95 justify-between mt-2">
-                        <p className="fs-2xl m-0 fc-a2 font-serif">${room.price}</p>
-                        <button className="bg-col-a2 o-70 h-op2 w-50 fc-white" onClick={() => {}}>Add to cart</button>
+                        <p className="fs-2xl m-0 fc-a2 font-serif">${startDate == "" || endDate == "" ? room.price : room.price * dateDifference(startDate, endDate)}</p>
+                        <div 
+                            className="w-50 relative"
+                            onMouseEnter={() => setBtnHovered(true)} onMouseLeave={() => setBtnHovered(false)}
+                        >
+                            <button className="bg-col-a2 o-70 h-op2 w-100 fc-white" onClick={handleSubmit}>Add to cart</button>
+                            
+                            <div className={`absolute flex-center transition-3 pointer ${btnHovered ? "mt-1 o-100" : "mt--2 o-0"}`}>
+                                <p className="m-0 font-serif fs-xs o-50">Or click here to&nbsp;</p>
+                                <p className="m-0 font-serif fs-xs fc-a2"> buy now</p>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div 
+                className="fixed w-100 h-64p bg-col-white z-100 flex-center transition self-flex-end bottom-0" style={{'marginBottom' : showSuccess ? '0px' : '-64px'}}
+            >
+                <img src={check} className="ml-5 h-50"/>
+                <h3 className="font-main fc-green ml-1">Successfully Added to Cart</h3>
+            </div>
         </div>
     )
+}
+
+
+function dateDifference(date1 : any, date2 : any) {
+    const millisecondsPerDay = 1000 * 60 * 60 * 24;
+    const startDate : any = new Date(date1);
+    const endDate : any = new Date(date2);
+    return Math.round((endDate - startDate) / millisecondsPerDay);
 }

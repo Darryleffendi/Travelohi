@@ -12,4 +12,14 @@ export default interface IUser {
     emailList? : boolean;
     imageUrl? : any;
     ID? : number;
+    phoneNumber? : string;
+    address? : string;
+
+    cardHolder? : string;
+    cardNumber? : string;
+    cardExpiry? : string;
+    cardCvv? : string;
+    walletBalance? : number;
+    receiveEmail? : boolean;
+    banned? : boolean;
 }

@@ -67,7 +67,7 @@ export default function ManageFlightPage({toggleLoading, setSuccess} : any) {
     }
 
     return (
-        <div className="w-80 mobile-flex-col">
+        <div className="w-90 mobile-flex-col">
             <div className="flex-col w-100 gap-10 mt-5 ml-5">
                 <div className={`w-100 rounded bg-col-light flex-col flex-center justify-center`}>
                 <p className="font-medium font-main fc-a w-80">Departure</p>
@@ -145,7 +145,7 @@ export default function ManageFlightPage({toggleLoading, setSuccess} : any) {
                 <label className="font-p fc-gray fs-2xs text-left w-100" htmlFor="price">Price</label>
                 <input name="price" value={data.price} onChange={handleChange} className={`${styles.input}`} placeholder="Price" id="price"/>
                 
-                <button className="bg-col-gray o-70 h-op2 w-100 mt-2" onClick={submitForm}>Save Changes</button>
+                <button className="bg-col-a2 fc-white o-70 h-op2 w-100 mt-2" onClick={submitForm}>Save Changes</button>
                 <p className="font-p fc-a fs-3xs text-left w-100 mb-5">*Adding new data to database</p>
             </div>
         </div>

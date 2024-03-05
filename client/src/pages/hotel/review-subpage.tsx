@@ -11,7 +11,6 @@ export default function ReviewSubpage({hotel} : any) {
     const [openReview, setOpenReview] = useState<boolean>(false);
     const [reviews, setReviews] = useState([]);
     const [reviewIndex, setReviewIndex] = useState(0)
-    const [overallRating, setOverallRating] = useState(0);
     const [opacity, setOpacity] = useState(0);
 
     const changeReviewSlide = (increment : number) => {
@@ -39,17 +38,6 @@ export default function ReviewSubpage({hotel} : any) {
     useEffect(() => {
         if(hotel !== undefined) {
             fetchReview();
-            
-            let count = 0;
-
-            if(hotel.cleanlinessRating > 0) count ++;
-            if(hotel.comfortRating > 0) count ++;
-            if(hotel.locationRating > 0) count ++;
-            if(hotel.serviceRating > 0) count ++;
-
-            if(count != 0) {
-                setOverallRating((hotel.cleanlinessRating + hotel.comfortRating + hotel.locationRating + hotel.serviceRating) / count);
-            }
         }
     }, [hotel])
 
@@ -65,7 +53,6 @@ export default function ReviewSubpage({hotel} : any) {
                     onMouseEnter={() => setOpacity(100)} onMouseLeave={() => setOpacity(0)}>Reviews</p>
                 <div className="flex gap-10 justify-between flex-center">
                     <div 
-                        // bg-col-white shadow-light
                         className="h-40p w-s15 rounded flex-center gap-s pointer"
                         onMouseEnter={() => setOpacity(100)} onMouseLeave={() => setOpacity(0)}
                     >
@@ -73,7 +60,7 @@ export default function ReviewSubpage({hotel} : any) {
                             Rating
                         </p>
                         <div className="h-100 flex-center">
-                            <StarRating rating={overallRating}/>
+                            <StarRating rating={hotel.rating}/>
                         </div>
                     </div>
 
@@ -115,16 +102,6 @@ export default function ReviewSubpage({hotel} : any) {
 
                         </div>
                     </div>
-                    
-                    {/* <div 
-                        className="bg-col-a2 h-40p w-15 rounded flex-center justify-around shadow-light pointer o-60 h-op2"
-                        onClick={() => setOpenReview(true)}
-                    >
-                        <p className="fs-xs fc-white font-medium">
-                            Write a review
-                        </p>
-
-                    </div> */}
 
                     <p className="font-serif o-60 fc-a h-op3 pointer" onClick={() => setOpenReview(true)}>View all reviews</p>
                 </div>

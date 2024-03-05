@@ -9,4 +9,5 @@ func SeedDatabase(db *gorm.DB) {
 	seedPlanes(db)
 	seedHotel(db)
 	seedHotelRoom(db)
+	seedFlights(db)
 }

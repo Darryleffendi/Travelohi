@@ -12,6 +12,7 @@ type Hotel struct {
 	Facilities        string `json:"facilities"`
 	CityId            uint   `json:"cityId"`
 	City              City   `gorm:"foreignKey:CityId"`
+	Rating            uint   `json:"rating" gorm:"default:0"`
 	CleanlinessRating uint   `json:"cleanlinessRating" gorm:"default:0"`
 	ComfortRating     uint   `json:"comfortRating" gorm:"default:0"`
 	LocationRating    uint   `json:"locationRating" gorm:"default:0"`

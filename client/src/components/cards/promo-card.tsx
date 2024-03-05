@@ -2,7 +2,7 @@ import { useState } from 'react';
 import discountIcon from '../../assets/icon/discount.png';
 import { APP_SETTINGS } from '../../settings/app-settings';
 
-export default function PromoCard({imgSrc = null, promo, width = 30, className = "", style} : any) {
+export default function PromoCard({imgSrc = null, promo, width = 30, className = "", style, onClick = () => {}} : any) {
 
     let sizeClass = " w-" + width + " h-100"
 
@@ -16,7 +16,8 @@ export default function PromoCard({imgSrc = null, promo, width = 30, className =
     const [hovered, setHovered] = useState(false);
 
     return (
-        <div className={`overflow-hidden flex ${sizeClass} transition-2 relative ${className}`} 
+        <div className={`overflow-hidden flex ${sizeClass} transition-2 relative ${className}`}
+            onClick={onClick} 
             onMouseEnter={() => setHovered(true)} 
             onMouseLeave={() => setHovered(false)}
             style={style}

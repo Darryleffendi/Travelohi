@@ -7,7 +7,7 @@ export default function FlightCard({className, ticket, style} : any) {
     const [hovered, setHovered] = useState<boolean>(false);
     const navigate = useNavigator();
 
-    let imgSrc = ticket.arrivalCity.imageUrl
+    let imgSrc = ticket.arrivalCity.imageUrl.trim().replace(".", "")
     let airline = ticket.plane.airline.name
     let city = ticket.arrivalCity.name
     let departCity = ticket.departureCity.name

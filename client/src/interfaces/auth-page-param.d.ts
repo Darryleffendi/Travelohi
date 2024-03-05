@@ -6,4 +6,6 @@ export default interface IAuthPageParameters {
     submitForm? : Function;
     newData : IUser | any;
     errorMessage: string;
+    setErrorMessage ?: Function;
+    setShowOtpPopup ? : Function;
 }

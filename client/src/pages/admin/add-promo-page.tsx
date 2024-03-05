@@ -16,6 +16,7 @@ export default function AddPromoPage({toggleLoading, setSuccess} : any) {
     
     const [uploadedImage, setUploadedImage] = useState(null);
     const [uploadedImageSrc, setUploadedImageSrc] = useState<any>(null);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleFileChange = (event : any) => {
         setUploadedImage(event.target.files[0]);
@@ -47,9 +48,16 @@ export default function AddPromoPage({toggleLoading, setSuccess} : any) {
             method: 'POST',
             body: formData
         });
+        const respData = await response.json();
+        if("error" in respData) {
+            setErrorMessage(respData.error)
+        }
+        else {
+            setErrorMessage("")
+            setSuccess()
+        }
 
         toggleLoading(false);
-        setSuccess()
     }
 
     return (
@@ -82,7 +90,8 @@ export default function AddPromoPage({toggleLoading, setSuccess} : any) {
                         </div>
                     )  
                 }
-                <button className="bg-col-gray o-70 h-op2 w-80 mt-2" onClick={submitForm}>Save Changes</button>
+                <p className="font-p fs-2xs fc-red mb-1" id="error_login">{errorMessage}</p>
+                <button className="bg-col-a2 fc-white o-70 h-op2 w-80 mt-2" onClick={submitForm}>Save Changes</button>
                 <p className="font-p fc-a fs-3xs text-left w-80">*Adding new data to database</p>
             </div>
         </div>

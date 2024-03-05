@@ -90,6 +90,16 @@ func Register(c *fiber.Ctx) error {
 	if !util.ValidateQuestion(user.SecurityQuestion) {
 		return c.Status(400).JSON(map[string]string{"error": "Invalid Question"})
 	}
+	if parsedDate.Compare(time.Now()) > 0 {
+		return c.Status(400).JSON(map[string]string{"error": "Invalid Date of Birth"})
+	}
+
+	var emailCount int64
+	database.DB.Model(&models.User{}).Where("email =?", user.Email).Count(&emailCount)
+
+	if emailCount > 0 {
+		return c.Status(400).JSON(map[string]string{"error": "Email already exists"})
+	}
 
 	database.DB.Create(&user)
 
@@ -116,6 +126,9 @@ func Login(c *fiber.Ctx) error {
 		c.Status(fiber.StatusNotFound)
 		return c.JSON(fiber.Map{"error": "User not found"})
 	}
+	if user.Banned {
+		return c.JSON(fiber.Map{"error": "User is banned"})
+	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data["password"])); err != nil {
 		c.Status(fiber.StatusBadRequest)
@@ -135,9 +148,9 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	cookie := fiber.Cookie{
-		Name:  "jwt",
-		Value: token,
-		//Expires:  time.Now().Add(time.Hour * 24 * 7),
+		Name:     "jwt",
+		Value:    token,
+		Expires:  time.Now().Add(time.Hour * 24 * 7),
 		HTTPOnly: true,
 	}
 
@@ -169,14 +182,6 @@ func User(c *fiber.Ctx) error {
 	return c.JSON(user)
 }
 
-func GetUser(c *fiber.Ctx) error {
-	var users []models.User
-
-	database.DB.Find(&users)
-
-	return c.JSON(users)
-}
-
 func Logout(c *fiber.Ctx) error {
 	cookie := fiber.Cookie{
 		Name:     "jwt",
@@ -186,6 +191,156 @@ func Logout(c *fiber.Ctx) error {
 	}
 
 	c.Cookie(&cookie)
+
+	return c.JSON(fiber.Map{
+		"message": "success",
+	})
+}
+
+func RequestOTP(c *fiber.Ctx) error {
+	var data map[string]interface{}
+
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	email := data["email"].(string)
+
+	if email == "" {
+		return c.JSON(fiber.Map{
+			"error": "Email not found",
+		})
+	}
+
+	var user models.User
+	result := database.DB.Where("email =?", email).First(&user)
+
+	if result.Error != nil {
+		return c.JSON(fiber.Map{
+			"error": "Email not found",
+		})
+	}
+
+	database.DB.Where("email LIKE ?", email).Delete(&models.Otp{})
+
+	otpCode := util.GenerateOTP()
+
+	otp := models.Otp{
+		Email:      email,
+		OtpCode:    otpCode,
+		ExpireDate: time.Now().Add(time.Minute * 2),
+		UserId:     user.ID,
+	}
+
+	database.DB.Create(&otp)
+
+	subject := fmt.Sprintf("Your One-Time Password (OTP) Code")
+	body := fmt.Sprintf("Dear %s,\n\nThank you for choosing our service. To complete your authentication process, please use the following One-Time Password (OTP) code:\n\nOTP Code: %s\n\nPlease enter this code within the specified time frame to proceed with your request. If you have any questions or encounter any issues, feel free to reach out to our support team.\n\nBest regards,\nTraveloHI", user.FirstName, otpCode)
+
+	sendMail(email, subject, body)
+
+	return c.JSON(fiber.Map{
+		"message": "success",
+	})
+}
+
+func ValidateOTP(c *fiber.Ctx) error {
+	var data map[string]string
+
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	email := data["email"]
+	otpCode := data["otpCode"]
+
+	var otp models.Otp
+	database.DB.Where("email =?", email).First(&otp)
+
+	if otp.OtpCode != otpCode {
+		return c.JSON(fiber.Map{
+			"error": "Invalid OTP",
+		})
+	}
+
+	if otp.ExpireDate.Compare(time.Now()) < 0 {
+		return c.JSON(fiber.Map{
+			"error": "OTP Expired, please refresh page",
+		})
+	}
+
+	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
+		Issuer:    strconv.Itoa(int(otp.UserId)),
+		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+	})
+
+	token, err := claims.SignedString([]byte(SecretKey))
+
+	if err != nil {
+		c.Status(fiber.StatusInternalServerError)
+		return c.JSON(fiber.Map{"error": "Could not login"})
+	}
+
+	cookie := fiber.Cookie{
+		Name:     "jwt",
+		Value:    token,
+		Expires:  time.Now().Add(time.Hour * 24 * 7),
+		HTTPOnly: true,
+	}
+
+	c.Cookie(&cookie)
+
+	return c.JSON(fiber.Map{
+		"message": "success",
+	})
+}
+
+func ChangePassword(c *fiber.Ctx) error {
+	var data map[string]string
+
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	email := data["email"]
+	password := data["password"]
+	confirmPassword := data["confirmPassword"]
+	securityAnswer := data["securityAnswer"]
+	securityQuestion := data["securityQuestion"]
+
+	if email == "" || password == "" || confirmPassword == "" || securityAnswer == "" || securityQuestion == "" {
+		return c.Status(400).JSON(fiber.Map{"error": "Please fill in all the fields"})
+	}
+	if !util.ValidatePassword(password) {
+		return c.Status(400).JSON(map[string]string{"error": "Invalid Password"})
+	}
+	if password != confirmPassword {
+		return c.Status(400).JSON(map[string]string{"error": "Password Does Not Match"})
+	}
+
+	var user models.User
+	result := database.DB.Where("email=?", email).Find(&user)
+
+	if result.Error != nil {
+		return c.Status(400).JSON(map[string]string{"error": "Email not found"})
+	}
+
+	if user.SecurityQuestion != securityQuestion || user.SecurityAnswer != securityAnswer {
+		return c.Status(400).JSON(map[string]string{"error": "Invalid Security Question or Answer"})
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err == nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Password cannot be the same as the previous password"})
+	}
+
+	if user.Banned {
+		return c.Status(400).JSON(map[string]string{"error": "User is banned"})
+	}
+
+	passEncrypt, _ := bcrypt.GenerateFromPassword([]byte(password), 14)
+
+	user.Password = string(passEncrypt)
+	database.DB.Save(&user)
 
 	return c.JSON(fiber.Map{
 		"message": "success",

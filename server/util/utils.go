@@ -61,3 +61,18 @@ func CamelToSnake(s string) string {
 	}
 	return sb.String()
 }
+
+func GenerateOTP() string {
+	rand.Seed(time.Now().UnixNano())
+
+	// Define the range of characters (0-9) for the OTP
+	characters := "0123456789"
+	otp := make([]byte, 6)
+
+	// Generate random OTP characters
+	for i := range otp {
+		otp[i] = characters[rand.Intn(len(characters))]
+	}
+
+	return string(otp)
+}

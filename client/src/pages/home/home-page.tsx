@@ -7,6 +7,7 @@ import bed from "../../assets/icon/bed.png"
 import flight from "../../assets/icon/plane.png"
 import search from "../../assets/icon/search_dark.png"
 import left from "../../assets/icon/leftWhite.png"
+import whyusimg from "../../assets/images/whyus.png"
 import right from "../../assets/icon/rightWhite.png"
 import bg from "../../assets/images/footer-bg.jpg"
 import { APP_SETTINGS } from "../../settings/app-settings";
@@ -14,6 +15,7 @@ import Footer from "../../components/footer";
 import PromoSlider from "./promo-slider";
 import HotelSlider from "./hotel-slider";
 import FlightSlider from "./flight-slider";
+import useNavigator from "../../contexts/navigator-context";
 
 export default function HomePage() {
 
@@ -36,6 +38,8 @@ export default function HomePage() {
 
     const [showCountriesDropdown, setShowCountriesDropdown] = useState(false);
     const [headerTransform, setHeaderTransform] = useState("translateY(0px)")
+
+    const navigate = useNavigator();
 
     const moveCursor = (e : any) => {
 
@@ -221,7 +225,10 @@ export default function HomePage() {
                 >
                     <img src={search} className="h-24p transition"/>
                 </div>
-                <div className={`w-15 h-100 pointer flex-center justify-around transition no-mobile ${styles.searchBtn}`}>
+                <div 
+                    className={`w-15 h-100 pointer flex-center justify-around transition no-mobile ${styles.searchBtn}`}
+                    onClick={() => {showSearchField ? navigate("/explore/query:" + searchField) : {}}}
+                >
                     <p className="font-medium fs-xs fc-white">{showSearchField ? 'Search' : 'Clear Filters'}</p>
                 </div>
             </div>
@@ -252,8 +259,8 @@ export default function HomePage() {
                     <img src={bg} className="w-100 cover" />
                 </div>
                 
-                <div className="w-40">
-
+                <div className="w-40 z-5">
+                    {/* <img src={whyusimg} className="w-70 mt--5 o-30"/> */}
                 </div>
 
                 <div className="w-40 z-5">

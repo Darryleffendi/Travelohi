@@ -27,6 +27,7 @@ export default function ManageHotelPage({toggleLoading, setSuccess} : any) {
 
     const [countries, setCountries] = useState<Array<any>>([]);
     const [cities, setCities] = useState<Array<any>>([]);
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
 
@@ -181,6 +182,15 @@ export default function ManageHotelPage({toggleLoading, setSuccess} : any) {
 
         const result = await response.json();
 
+        if("error" in result) {
+            setErrorMessage(result.error)
+            toggleLoading(false);
+            return;
+        }
+        else {
+            setErrorMessage("")
+        }
+
         /* ======= Create Room Request ======= */
 
         roomData.forEach(async (room, index) => {
@@ -234,7 +244,7 @@ export default function ManageHotelPage({toggleLoading, setSuccess} : any) {
     }
 
     return (
-        <div className="w-80 mobile-flex-col">
+        <div className="w-90 mobile-flex-col">
             <div className="flex-col w-100 gap-10 mt-5 ml-5">
                 <label className="font-p fc-gray fs-2xs text-left w-100" htmlFor="name">Name</label>
                 <input name="name" value={data.name} onChange={handleChange} className={`${styles.input}`} placeholder="Name" id="name"/>
@@ -372,7 +382,8 @@ export default function ManageHotelPage({toggleLoading, setSuccess} : any) {
                             <img src={URL.createObjectURL(data.frontImage)} className="w-80"/>
                         )  
                     }
-                    <button className="bg-col-gray o-70 h-op2 w-80 mt-2" onClick={submitForm}>Save Changes</button>
+                    <p className="font-p fs-2xs fc-red mb-1" id="error_login">{errorMessage}</p>
+                    <button className="bg-col-a2 fc-white o-70 h-op2 w-80 mt-2" onClick={submitForm}>Save Changes</button>
                     <p className="font-p fc-a fs-3xs text-left w-80 mb-5">*Adding new data to database</p>
                 </div>
                 

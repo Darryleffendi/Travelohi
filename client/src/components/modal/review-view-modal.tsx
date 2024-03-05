@@ -80,9 +80,19 @@ export default function ReviewViewModal({unmount = () => {}, hotelId, reviews = 
 
     return (
         <div className="w-screen h-screen fixed z-100 bg-col-dark2-transparent flex-center justify-center transition-2 top-0" style={{opacity: modalShown ? '100%' : '0%', backdropFilter: modalShown ? 'blur(10px)' : '' }} onClick={closeModal}>
-            <div className={`bg-col-main shadow-light transition-3 flex-center justify-center wrap overflow-auto ${styles.modal}`} style={ modalShown ? {marginTop:'0vw', opacity: '100%'} : {marginTop:'60vw', opacity: '0%'}}  onClick={(e) => e.stopPropagation()}>
-                <div className="w-90 h-10 flex-center gap-m">
-                    <div className="flex-col w-30">
+            <div className={`bg-col-main shadow-light transition-3 flex-center justify-center mobile-flex-col overflow-auto ${styles.modal}`} style={ modalShown ? {marginTop:'0vw', opacity: '100%'} : {marginTop:'60vw', opacity: '0%'}}  onClick={(e) => e.stopPropagation()}>
+                <div className="w-30 h-80 flex-col gap-10">
+                    
+                    <p className="fs-l font-serif o-70">Filters</p>
+
+                    <div>
+                        <label className="font-p fc-gray fs-2xs text-left w-80 mt-2" htmlFor="category">Rating</label>
+                        <div>
+                            <StarRating rating={rating} setRating={setRating}/>
+                        </div>
+                    </div>
+
+                    <div className="flex-col w-80">
                         <label className="font-p fc-gray fs-2xs text-left w-100" htmlFor="category">Category</label>
                         <select 
                             className={`${styles.inputInverse} w-100`} id="city" 
@@ -97,15 +107,8 @@ export default function ReviewViewModal({unmount = () => {}, hotelId, reviews = 
                             <option value={'Service'} >Service</option>
                         </select>
                     </div>
-
-                    <div>
-                        <label className="font-p fc-gray fs-2xs text-left w-100 mt-2" htmlFor="category">Rating</label>
-                        <div>
-                            <StarRating rating={rating} setRating={setRating}/>
-                        </div>
-                    </div>
                 </div>
-                <div className={`w-100 h-70 mr-5 mw-80 transition overflow-auto scroll-simple`}>
+                <div className={`w-60 h-80 mw-80 transition overflow-auto scroll-simple`}>
                     {
                         ((category === "" || category === "Default") && rating == 0) ? (
                             reviewState.map((review : any, i : number) => {

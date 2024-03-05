@@ -12,6 +12,7 @@ import AddPromoPage from "./add-promo-page"
 import { useState } from "react"
 import ManageHotelPage from "./manage-hotel-page"
 import ManageFlightPage from "./manage-flight-page"
+import ManageUserPage from "./manage-user-page"
 
 export default function AdminPage() {
 
@@ -43,7 +44,7 @@ export default function AdminPage() {
     let pageArray = [
         <ManagePromoPage toggleLoading={toggleLoading} setSuccess={setSuccess} />, 
         <AddPromoPage toggleLoading={toggleLoading} setSuccess={setSuccess} />,
-        <></>,
+        <ManageUserPage toggleLoading={toggleLoading} setSuccess={setSuccess}/>,
         <ManageHotelPage toggleLoading={toggleLoading} setSuccess={setSuccess} />,
         <ManageFlightPage toggleLoading={toggleLoading} setSuccess={setSuccess} />
     ]
@@ -77,7 +78,7 @@ export default function AdminPage() {
                     </div>
                 </div>
 
-                <div className="transition w-80 overflow-auto scroll-simple" style={show ? {opacity : '100%'} : {opacity : '0%'}}>
+                <div className="transition w-80 overflow-auto scroll-simple bg-col-main" style={show ? {opacity : '100%'} : {opacity : '0%'}}>
                     {
                         pageArray[subpage]
                     }

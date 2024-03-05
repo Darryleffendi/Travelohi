@@ -24,12 +24,12 @@ export default function ReviewCard({className = "w-100 h-s60", review, next, pre
                                 </div>
                             </div>
                             <div className="flex-center">
-                                <div className="h-48p bg-col-a-transparent w-48p rounded-50 flex-center justify-center o-60 transition-2s hover-bg-col-a2 mr-1">
+                                <div className="h-48p bg-col-a-transparent w-48p rounded-50 flex-center justify-center o-60 transition-2s hover-bg-col-a2 mr-1 pointer">
                                     <div className="h-40p bg-col-main w-40p rounded-50 flex-center justify-center" onClick={prev}>
                                         <img src={leftArrow} className="w-40 filter-black" />
                                     </div>
                                 </div>
-                                <div className="h-48p bg-col-a-transparent w-48p rounded-50 flex-center justify-center o-60 transition-2s hover-bg-col-a2">
+                                <div className="h-48p bg-col-a-transparent w-48p rounded-50 flex-center justify-center o-60 transition-2s hover-bg-col-a2 pointer">
                                     <div className="h-40p bg-col-main w-40p rounded-50 flex-center justify-center" onClick={next}>
                                         <img src={rightArrow} className="w-40 filter-black" />
                                     </div>

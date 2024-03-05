@@ -12,6 +12,7 @@ import { APP_SETTINGS } from "../../settings/app-settings";
 import useNavigator from "../../contexts/navigator-context";
 import ProfilePicturePopup from "./profile-picture-popup";
 import IUser from "../../interfaces/user";
+import OtpPopup from "./otp-popup";
 
 export default function AuthPage({style} : any) {
 
@@ -46,6 +47,7 @@ export default function AuthPage({style} : any) {
 
     const [showCaptcha, setShowCaptcha] = useState(false);
     const [showProfilePopup, setShowProfilePopup] = useState(false);
+    const [showOtpPopup, setShowOtpPopup] = useState(false);
     const [captchaVerified, setCaptchaVerified] = useState(false);
     const [resolver, setResolver] = useState<any>(null);
     
@@ -151,7 +153,6 @@ export default function AuthPage({style} : any) {
     useEffect(() => {
         (async () => {
             if (captchaVerified && registerData.imageUrl !== null) {
-                console.log(registerData)
                 const formData = new FormData();
         
                 Object.keys(registerData).forEach(key => {
@@ -243,7 +244,7 @@ export default function AuthPage({style} : any) {
                 
                 {
                     (subpage === 0 || subpage === 10) ? (
-                        <LoginSubpage setSubpage={setSubpage} submitForm={submitLogin} addNewData={addLoginData} newData={loginData} errorMessage={loginError}/>
+                        <LoginSubpage setSubpage={setSubpage} submitForm={submitLogin} setErrorMessage={setLoginError} setShowOtpPopup={setShowOtpPopup} addNewData={addLoginData} newData={loginData} errorMessage={loginError}/>
                     ) : (
                         subpage === 1 ? (
                             <RegisterSubpage setSubpage={setSubpage} addNewData={addRegisterData} newData={registerData} errorMessage={regisError}/>
@@ -277,6 +278,8 @@ export default function AuthPage({style} : any) {
                     <ReCaptchaPopup onCaptcha={() => setCaptchaVerified(true)}/>
                 ) : showProfilePopup == true ? (
                     <ProfilePicturePopup  onCaptcha={() => setCaptchaVerified(true)} changeProfilePicture={changeProfilePicture}/>
+                ) : showOtpPopup ? (
+                    <OtpPopup email={loginData.email}/>
                 ) : <></>
             }
             
