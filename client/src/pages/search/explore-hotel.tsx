@@ -104,7 +104,7 @@ export default function ExploreHotel({query = '', isSticky, country = ""} : any)
         }
 
         // Untuk testing pagination
-        // data = [...data, ...data, ...data, ...data]
+        data = [...data, ...data, ...data, ...data]
 
         setHotels(data);
     }

@@ -52,7 +52,6 @@ export default function FlightDetails() {
             setHeaderTextTransform(`translateY(${scrollTop * 0.35}px)`);
         }
     }
-
     
     const checkSelectedSeat = (seat : any) : boolean => {
         for(let i = 0; i < selectedSeats.length; i++) {
